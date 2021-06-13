@@ -3,10 +3,14 @@ package com.cainmod.animalsexpanded;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.tutorial.Tutorial;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -17,6 +21,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.cainmod.animalsexpanded.client.entity.SheepExRenderer;
+import com.cainmod.animalsexpanded.common.entity.SheepEx;
+import com.cainmod.animalsexpanded.setup.ModEntities;
 import com.cainmod.animalsexpanded.setup.Registration;
 
 import java.util.stream.Collectors;
@@ -46,16 +53,24 @@ public class AnimalsExpanded
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setup(final FMLCommonSetupEvent event)
+    @SuppressWarnings("deprecation")
+	private void setup(final FMLCommonSetupEvent event)
     {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        
+        DeferredWorkQueue.runLater(() -> {
+        	GlobalEntityTypeAttributes.put(ModEntities.SHEEPEX.get(), SheepEx.createMobAttributes().build());
+        	RenderingRegistry.registerEntityRenderingHandler(ModEntities.SHEEPEX.get(), SheepExRenderer::new);
+        });
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
+    @SuppressWarnings("resource")
+	private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
+        
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

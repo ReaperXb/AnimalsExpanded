@@ -20,7 +20,9 @@ public class Registration {
 		
 		BLOCKS.register(modEventBus);
 		ITEMS.register(modEventBus);
+		ENTITY_TYPES.register(modEventBus);
 		
 		ModItems.register();
+		ModEntities.register();
 	}
 }
